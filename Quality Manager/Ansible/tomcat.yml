@@ -1,0 +1,78 @@
+---
+- hosts: portal_titular
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+  tasks:
+
+    - name: 
+      yum:
+        name: java-1.8.0-openjdk
+
+    - name: criando usuario tomcat
+      user:
+        name: tomcat
+
+
+    - name: Criacao pasta tomcat
+      file:
+        path: /usr/local/tomcat7
+        state: directory
+        recurse: yes   
+        
+
+    - name: Download tomcat
+      get_url:
+        url: " https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.99/bin/apache-tomcat-7.0.99.tar.gz"
+        dest: "/usr/local/tomcat7/"
+
+
+    - unarchive:
+        src: "/usr/local/tomcat7/apache-tomcat-7.0.99.tar.gz"
+        dest: "/usr/local/tomcat7"
+        remote_src: True
+
+    - name: renomeando arquivo para tomcat7
+      command: mv /usr/local/tomcat7/apache-tomcat-7.0.99  /usr/local/tomcat7/tomcat7
+
+    - name: 
+      shell: cp -avr /usr/local/tomcat7/tomcat7/* /usr/local/tomcat7/
+
+    - name: Alterando  proprietario
+      file:
+        path: /usr/local/tomcat7
+        mode: 0755
+        recurse: yes  
+        owner: tomcat
+        group: tomcat
+    
+    - name: Alterando permissao
+      file:
+        path: /usr/local/tomcat7/bin
+        mode: '0775'
+    
+
+    - name: iniciando apache
+      shell: nohup /usr/local/tomcat7/bin/startup.sh &
+  
+
+    - name: iniciando Apache Tomcat
+      shell: sh startup.sh
+      args:
+        chdir: "/usr/local/tomcat7/bin"
+    
+    - name: copiando arquivo rc.local
+      copy:
+        src: /home/Projetos/Projeto_MD2_LGPD/Playbook/files/rc.local
+        dest: /etc/rc.d/rc.local
+
+    - name: tornando arquivo rc.local executavel
+      shell: chmod +x /etc/rc.d/rc.local
+        
+    - name: copiando script tomcat service
+      copy:
+        src: /home/Projetos/Projeto_MD2_LGPD/Playbook/files/tomcatservice.sh
+        dest: /etc/init.d/tomcatservice.sh
+
+    - name: tornando arquivo tomcat executavel
+      shell: chmod +x /etc/init.d/tomcatservice.sh
