@@ -1,5 +1,5 @@
 resource "aws_security_group" "sg_MD2_quality_manager" {
-  name        = "sg_MD2_quality_manager_teste"
+  name        = "sg_MD2_quality_manager"
   description = "grupo para projeto MD2"
   vpc_id      = "vpc-0be8c96a29cbc5806"
 
