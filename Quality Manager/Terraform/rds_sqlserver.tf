@@ -9,7 +9,7 @@ resource "aws_db_instance" "rds_quality_manager_sql" {
   port                   = 1433
   availability_zone      = "us-east-1a"
   db_subnet_group_name   = "default-vpc-0be8c96a29cbc5806"
-  vpc_security_group_ids = [aws_security_group.sg_MD2_quality_manager_teste.id]
+  vpc_security_group_ids = [aws_security_group.sg_MD2_quality_manager.id]
   license_model          = "license-included"
   publicly_accessible    = true
   skip_final_snapshot    = true
